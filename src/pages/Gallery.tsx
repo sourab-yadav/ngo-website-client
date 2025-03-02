@@ -8,14 +8,16 @@ const galleryImages = [
   { id: 5, src: "/gallery/5.jpg", title: "Image Title 5" },
   { id: 6, src: "/gallery/6.jpg", title: "Image Title 6" },
   { id: 7, src: "/gallery/7.jpg", title: "Image Title 7" },
-  { id: 8, src: "/logo.png", title: "Image Title 8" },
+  { id: 8, src: "/gallery/8.jpg", title: "Image Title 8" },
 ];
 
 export const Gallery: React.FC = () => {
   return (
-    <section className="py-10 bg-gray-100" id="galleryContainer">
+    <section className="py-30 bg-gray-100" id="gallerysection">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-6">Gallery</h2>
+        <h2 className="text-3xl font-semibold ml-[47%] mb-6 border-b-4 border-red-500 inline-block">
+          Gallery
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {galleryImages.map((image) => (
             <div key={image.id} className="relative group">
