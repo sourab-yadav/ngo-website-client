@@ -3,6 +3,7 @@ import { useForm, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = "http://localhost:5000/api/v1"; // Update with your backend URL
 
@@ -54,7 +55,7 @@ export default function AuthForm() {
       isRegister ? registerSchema : loginSchema
     ) as Resolver<RegisterFormInputs | LoginFormInputs>,
   });
-
+  const navigate = useNavigate();
   const onSubmit = async (data: RegisterFormInputs | LoginFormInputs) => {
     setLoading(true);
     setErrorMsg("");
@@ -73,8 +74,21 @@ export default function AuthForm() {
           email: data.email,
           password: data.password,
         });
-        alert("Login successful!");
-        console.log("Token:", response.data.token); // Save token in local storage or context
+      // Extract token data
+      const { access_token, refresh_token, expires_in } = response.data.token;
+
+      // Store tokens in localStorage or sessionStorage
+      localStorage.setItem("accessToken", access_token);
+      localStorage.setItem("refreshToken", refresh_token);
+      localStorage.setItem("tokenExpiry", (Date.now() + expires_in * 1000).toString());
+      // navigate("/#homesection");
+
+      // Redirect user after successful login
+      window.location.hash =
+      
+      
+      "homesection";
+
       }
     } catch (error: any) {
       setErrorMsg(error.response?.data?.message || "Something went wrong.");

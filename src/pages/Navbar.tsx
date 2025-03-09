@@ -49,7 +49,7 @@ export const Navbar = () => {
                   {item === "Sign In" ? (
                     <button
                       onClick={() => setIsModalOpen(true)}
-                      className="hover:bg-red-500 hover:text-white transition duration-300 px-4 py-2 rounded-lg"
+                      className="hover:bg-red-500 hover:text-white transition duration-300 px-4  rounded-lg"
                     >
                       {item}
                     </button>
