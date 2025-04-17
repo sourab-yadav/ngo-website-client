@@ -3,7 +3,6 @@ import { useForm, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = "http://localhost:5000/api/v1"; // Update with your backend URL
 
@@ -15,6 +14,7 @@ interface LoginFormInputs {
 interface RegisterFormInputs extends LoginFormInputs {
   firstName: string;
   lastName: string;
+  mobileno: string;
   confirmPassword: string;
 }
 
@@ -31,6 +31,11 @@ const registerSchema = yup.object({
   firstName: yup.string().required("First name is required"),
   lastName: yup.string().required("Last name is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
+  mobileno: yup
+    .string()
+    .min(10, "Minimum 10 characters")
+    .required("Mobile no is required")
+    .max(10, "Maximum 10 characters"),
   password: yup
     .string()
     .min(6, "Minimum 6 characters")
@@ -41,7 +46,7 @@ const registerSchema = yup.object({
     .required("Confirm Password is required"),
 });
 
-export default function AuthForm() {
+export default function AuthForm(props: { onClose: () => void; onLoginSuccess: () => void }) {
   const [isRegister, setIsRegister] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -55,7 +60,7 @@ export default function AuthForm() {
       isRegister ? registerSchema : loginSchema
     ) as Resolver<RegisterFormInputs | LoginFormInputs>,
   });
-  const navigate = useNavigate();
+
   const onSubmit = async (data: RegisterFormInputs | LoginFormInputs) => {
     setLoading(true);
     setErrorMsg("");
@@ -74,21 +79,12 @@ export default function AuthForm() {
           email: data.email,
           password: data.password,
         });
-      // Extract token data
-      const { access_token, refresh_token, expires_in } = response.data.token;
-
-      // Store tokens in localStorage or sessionStorage
-      localStorage.setItem("accessToken", access_token);
-      localStorage.setItem("refreshToken", refresh_token);
-      localStorage.setItem("tokenExpiry", (Date.now() + expires_in * 1000).toString());
-      // navigate("/#homesection");
-
-      // Redirect user after successful login
-      window.location.hash =
-      
-      
-      "homesection";
-
+        alert("Login successful!");
+        props.onClose(); // Close the modal after successful login
+        localStorage.setItem('token', response.data.token.access_token); // Save token in local storage or context
+        props.onLoginSuccess(); // ✅ Inform parent (Navbar) about successful login
+        props.onClose(); // ✅ Close the modal
+        // console.log("token:", response.data.token.access_token); // Save token in local storage or context
       }
     } catch (error: any) {
       setErrorMsg(error.response?.data?.message || "Something went wrong.");
@@ -123,6 +119,15 @@ export default function AuthForm() {
                   {isRegister &&
                     "lastName" in errors &&
                     errors.lastName?.message}
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Mobile No</label>
+                <input {...register("mobileno")} className="input-field" />
+                <p className="text-red-500 text-xs">
+                  {isRegister &&
+                    "mobileno" in errors &&
+                    errors.mobileno?.message}
                 </p>
               </div>
             </>

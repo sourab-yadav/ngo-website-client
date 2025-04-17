@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AuthForm from "./AuthForm";
+import { useNavigate } from "react-router-dom";
 
 const Modal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
-}> = ({ isOpen, onClose }) => {
+  onLoginSuccess: () => void;
+}> = ({ isOpen, onClose, onLoginSuccess }) => {
   if (!isOpen) return null;
 
   return (
@@ -16,7 +18,7 @@ const Modal: React.FC<{
         >
           ✖
         </button>
-        <AuthForm />
+        <AuthForm onClose={onClose} onLoginSuccess={onLoginSuccess} />
       </div>
     </div>
   );
@@ -24,6 +26,27 @@ const Modal: React.FC<{
 
 export const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+  };
+
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) setIsLoggedIn(true);
+  }, []);
+
   return (
     <>
       <header className="fixed top-0 left-0 w-full bg-black bg-opacity-10 opacity-75 z-10">
@@ -43,32 +66,59 @@ export const Navbar = () => {
                 "Gallery",
                 "About Us",
                 "Join Us",
-                "Sign In",
-              ].map((item) => (
-                <li key={item}>
-                  {item === "Sign In" ? (
-                    <button
-                      onClick={() => setIsModalOpen(true)}
-                      className="hover:bg-red-500 hover:text-white transition duration-300 px-4  rounded-lg"
-                    >
-                      {item}
-                    </button>
-                  ) : (
-                    <a
-                      href={`#${item.replace(/\s+/g, "").toLowerCase()}section`}
-                      className="hover:bg-red-500 hover:text-white transition duration-300 px-4 py-2 rounded-lg !text-white"
-                    >
-                      {item}
-                    </a>
-                  )}
+              ].map((item, index) => (
+                <li key={index}>
+                  <a
+                    href={`#${item.replace(/\s+/g, "").toLowerCase()}section`}
+                    className="hover:text-gray-50 hover:bg-red-500 transition duration-300 px-4 py-2 rounded-lg"
+                  >
+                    {item}
+                  </a>
                 </li>
               ))}
+
+              <li className="flex space-x-8">
+                {isLoggedIn ? (
+                  <>
+                    <li>
+                      <button
+                        onClick={handleProfileClick}
+                        className="hover:bg-red-500 hover:text-white transition duration-300 px-4 rounded-lg"
+                      >
+                        Profile
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={handleLogout}
+                        className="hover:bg-red-500 hover:text-white transition duration-300 px-4 rounded-lg"
+                      >
+                        Logout
+                      </button>
+                    </li>
+                  </>
+                ) : (
+                  <li>
+                    <button
+                      onClick={() => setIsModalOpen(true)}
+                      className="hover:bg-red-500 hover:text-white transition duration-300 px-4 rounded-lg"
+                    >
+                      Sign In
+                    </button>
+                  </li>
+                )}
+              </li>
             </ul>
           </nav>
         </div>
-        {/* Render Modal */}
       </header>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      {/* Pass login success handler to Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </>
   );
 };
