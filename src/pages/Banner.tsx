@@ -1,4 +1,5 @@
-export const Banner = () => {
+export const Banner = (props:any) => {
+  const { isModalOpen, setIsModalOpen } = props;
   return (
     <div
       id="homesection"
@@ -23,7 +24,7 @@ export const Banner = () => {
           time.
         </p>
         <p className="mt-6">
-          <span className="bg-red-500 text-white px-4 py-2 rounded-md font-bold">
+          <span className="bg-red-500 text-white px-4 py-2 rounded-md font-bold cursor-pointer" onClick={()=>{setIsModalOpen(true)}}>
             Start With A Little
           </span>
         </p>

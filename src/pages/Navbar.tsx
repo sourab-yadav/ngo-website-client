@@ -24,8 +24,9 @@ const Modal: React.FC<{
   );
 };
 
-export const Navbar = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export const Navbar = (props:any) => {
+  const { isModalOpen, setIsModalOpen } = props;
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
