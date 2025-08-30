@@ -78,7 +78,8 @@ export const Navbar = (props:any) => {
                 </li>
               ))}
 
-              <li className="flex space-x-8">
+              <li>
+                <ul className="flex space-x-8">
                 {isLoggedIn ? (
                   <>
                     <li>
@@ -108,6 +109,7 @@ export const Navbar = (props:any) => {
                     </button>
                   </li>
                 )}
+                </ul>
               </li>
             </ul>
           </nav>
